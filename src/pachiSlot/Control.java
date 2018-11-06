@@ -17,7 +17,8 @@ public class Control {
 	private ArrayList<Integer> tableNum1;
 	private ArrayList<Integer> tableNum2;
 	private ArrayList<Integer> tableNum3;
-
+	public int chipLength;
+	
 	public int[] stopPos = {-1,-1,-1};
 	public int stopCount = 0;
 	public int[] reelStopPos = {-1,-1,-1};
@@ -38,13 +39,14 @@ public class Control {
 			this.reelLength = stream.read();
 			this.yakuCount = stream.read();
 			this.maxLine = stream.read();
-
+			this.chipLength = 0;
 			ArrayList<ArrayList<Integer>> reelArray = new ArrayList<ArrayList<Integer>>();
 			for(int i = 0;i < 3;i++) {
 				ArrayList<Integer> array = new ArrayList<Integer>();
-
 				for(int j = 0;j < this.reelLength;j++) {
-					array.add(stream.read());
+					int num = stream.read();
+					array.add(num);
+					this.chipLength = num > this.chipLength ? num : this.chipLength;
 				}
 				reelArray.add(array);
 			}
@@ -63,7 +65,7 @@ public class Control {
 			}
 
 			this.betLine = new ArrayList<ArrayList<Integer>>();
-
+			
 			for(int i = 0;i < this.maxLine;i++) {
 				ArrayList<Integer> array = new ArrayList<Integer>();
 				for(int j = 0;j < 4;j++) {

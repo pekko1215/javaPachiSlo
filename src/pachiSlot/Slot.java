@@ -5,8 +5,8 @@ public class Slot {
 	public int betCoin;
 	public GameMode gamemode = GameMode.Normal;
 
-	private Control control;
-	private Reel reel;
+	public Control control;
+	public Reel reel;
 
 	public Slot(URL url) {
 		this.control = new Control(url);
