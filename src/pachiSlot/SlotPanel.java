@@ -21,15 +21,20 @@ public class SlotPanel extends JPanel{
 		BufferedImage buffer;
 		try {
 			buffer = ImageIO.read(url);
+			this.reelChips = this.splitImages(buffer);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		this.reelChips = this.splitImages(buffer);
 	}
+	
 	private ArrayList<BufferedImage> splitImages(BufferedImage buffer){
 		ArrayList<BufferedImage> list = new ArrayList<BufferedImage>();
-		this.slot.control.chip
+		int length = this.slot.control.chipLength;
+		int height = buffer.getHeight()/length;
+		for(int i=0;i < length;i ++) {
+			list.add(buffer.getSubimage(0,i*height,buffer.getWidth(),height));
+		}
 		return list;
 	}
 }
