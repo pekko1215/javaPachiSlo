@@ -16,6 +16,7 @@ public class MainFrame extends JFrame implements Runnable,KeyListener {
 		this.setVisible(true);
 		this.setTitle(title);
 		this.slotPanel = new SlotPanel(this.slot);
+		this.add(this.slotPanel);
 	}
 	
 	@Override
