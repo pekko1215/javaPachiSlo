@@ -14,6 +14,7 @@ public class Main {
 		b = this.slot.control.reelStop(1, 7);
 		c = this.slot.control.reelStop(2, 0);
 		System.out.printf("%d %d %d",a,b,c);
+		//高度なコード
 	}
 
 }
