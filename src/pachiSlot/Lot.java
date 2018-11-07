@@ -2,10 +2,13 @@ package pachiSlot;
 
 public class Lot {
 	public String name = null;
-	public static int getProbability(GameMode mode,int bet) {
+	public int getProbability(Slot slot) {
 		return 0;
 	}
-	public Lot() {
-
+	public ControlCode getControlCode(Slot slot) {
+		if(slot.bonusFlag != null) {
+			return slot.bonusFlag.getControlCode(slot);
+		}
+		return ControlCode.はずれ;
 	}
 }

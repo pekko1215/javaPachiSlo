@@ -1,16 +1,22 @@
 package pachiSlot.lots;
 
+import pachiSlot.ControlCode;
 import pachiSlot.GameMode;
 import pachiSlot.Lot;
 import pachiSlot.Slot;
 
 public class Bell extends Lot{
 
-	public Slot slot;
 	public String name = "ベル";
-	public static int getProbability(GameMode mode, int bet) {
-		if(mode != GameMode.Normal) return 0;
-		return 32768 * 1 / 7;
+	public int getProbability(Slot slot) {
+		if(slot.gamemode == GameMode.Normal) {
+			return 32768 * 1 / 5;	
+		}
+		return 32768;
 	}
-
+	
+	@Override
+	public ControlCode getControlCode(Slot slot) {
+		return ControlCode.プラム;
+	}
 }

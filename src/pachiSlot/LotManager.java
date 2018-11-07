@@ -12,7 +12,7 @@ public class LotManager {
 		this.lots.add(lot);
 	}
 	public Lot lot(LotAction action) {
-		int r = (new Random()).nextInt(32768-1);
+		int r = (new Random()).nextInt(32768);
 		int i;
 		for(i = 0;i < this.lots.size();i ++ ) {
 			r -= action.lot(this.lots.get(i));
