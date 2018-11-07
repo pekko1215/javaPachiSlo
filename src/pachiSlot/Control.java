@@ -9,7 +9,7 @@ public class Control {
 	private int reelLength;
 	private int yakuCount;
 	private int maxLine;
-	private Reel reel;
+	public Reel reel;
 	private ArrayList<Yaku> yakuList;
 	private ArrayList<ArrayList<Integer>> betLine;
 	private int slideTableSize;
@@ -50,6 +50,7 @@ public class Control {
 				}
 				reelArray.add(array);
 			}
+			this.chipLength++;
 			this.reel = new Reel(reelArray);
 
 			this.yakuList = new ArrayList<Yaku>();

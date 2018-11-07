@@ -1,5 +1,6 @@
 package pachiSlot;
 
+import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -12,10 +13,13 @@ public class MainFrame extends JFrame implements Runnable,KeyListener {
 	public MainFrame(String title,Slot slot) {
 		this.slot = slot;
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setSize(500,300);
-		this.setVisible(true);
+		this.setSize(700,400);
+		this.setLocationRelativeTo(null);
+		//this.setResizable(false);
 		this.setTitle(title);
 		this.slotPanel = new SlotPanel(this.slot);
+		this.add(this.slotPanel);
+		this.setVisible(true);
 	}
 	
 	@Override

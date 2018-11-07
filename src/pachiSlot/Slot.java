@@ -10,6 +10,7 @@ public class Slot {
 
 	public Slot(URL url) {
 		this.control = new Control(url);
+		this.reel = control.reel;
 	}
 
 }
