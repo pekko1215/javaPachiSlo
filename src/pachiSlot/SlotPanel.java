@@ -15,6 +15,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import javafx.scene.input.KeyCode;
 import utilities.SoundPlayer;
@@ -26,12 +27,13 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 	private Timer timer;
 	private Thread thread;
 	private ArrayList<BufferedImage> reelChips;
-	private final int FPS = 120;
+	private final int FPS = 60;
 	private double sleepTime = 1000. / this.FPS;
 	private final double reelSpeed = 780;
 	private int ChipWidth;
 	private int ChipHeight;
 	private int reelMargin = 30;
+	private boolean isFreeze = false;
 	
 	public SlotPanel(Slot slot){
 		this.slot = slot;
@@ -76,6 +78,7 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 			pay += this.slot.getPay(e.yaku);
 		}
 		System.out.println("pay:"+pay);
+		this.PayEffect(pay);
 		this.slot.gameState = GameState.BetWait;
 	}
 	@Override
@@ -143,6 +146,9 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 		}
 		if(stopFlag && this.slot.gameState == GameState.Rolling) {
 			this.Pay();
+			if(this.slot.isReplay) {
+				Replay();
+			}
 		}
 	}
 	
@@ -165,18 +171,29 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 	}
 	@Override
 	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
+		if(this.isFreeze)return;
 		switch(e.getKeyCode()) {
 		case KeyEvent.VK_UP:
 			if(this.slot.gameState == GameState.BetWait) {
-				this.slot.Bet(3);
-				PlaySound("bet.wav");
+				this.Bet(3);
 				break;
 			}
 			if(this.slot.gameState == GameState.Beted) {
-				this.slot.LeverOn();
-				PlaySound("start.wav");
+				this.LeverOn();
 				this.slot.WaitEnd();
+				this.Freeze();
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						try {
+							Thread.sleep(200);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						Resume();
+					}
+				}).start();
 				break;
 			}
 			for(int i=0;i<3;i++) {
@@ -195,11 +212,31 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 		case KeyEvent.VK_RIGHT:
 			this.stopReel(2);
 			break;
+		case KeyEvent.VK_SHIFT:
+			break;
+		case KeyEvent.VK_CONTROL:
+			break;
 		}
 	}
+	
+	private void Bet(int coin) {
+		if(!this.slot.isReplay) {
+			PlaySound("bet.wav");
+		}
+		this.slot.Bet(coin);
+	}
+	
+	private void LeverOn() {
+		this.slot.LeverOn();
+		PlaySound("start.wav");
+	}
 
-	private void PlaySound(String name) {
-		new SoundPlayer(getClass().getResource("Resources/sound/"+name)).Play();
+	private long PlaySound(String name) {
+		SoundPlayer s = new SoundPlayer(getClass().getResource("Resources/sound/"+name));
+		s.Play();
+		long length = s.clip.getFrameLength() * 1000;
+		float sampling = s.clip.getFormat().getSampleRate();
+		return (int)(length / sampling);
 	}
 	
 	private void LoopSound(String name) {
@@ -215,5 +252,48 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
 		
+	}
+	private void Freeze() {
+		this.isFreeze = true;
+	}
+	
+	private void Resume() {
+		this.isFreeze = false;
+	}
+	
+	private void Replay() {
+		this.Freeze();
+		long len = this.PlaySound("replay.wav");
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					Thread.sleep(len);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				Bet(slot.betCoin);
+				slot.isReplay = false;
+				Resume();
+			}
+		}).start();
+	}
+	private void PayEffect(int pay) {
+		if(pay == 0) return;
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				Freeze();
+				long len = PlaySound("pay.wav");
+				try {
+					Thread.sleep(len);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				Resume();
+			}
+		}).start();
 	}
 }
