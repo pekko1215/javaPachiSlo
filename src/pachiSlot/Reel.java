@@ -15,13 +15,28 @@ public class Reel {
 		return this.reelLength * this.reelChipHeight;
 	}
 	public void rollReel(int reel,int value) {
+		value = -value;
 		this.reelCharPos[reel] += value;
-		if(this.reelCharPos[reel] > getReelHeight()) {
-			this.reelCharPos[reel] -= this.reelCharPos[reel]; 
+		if(this.reelCharPos[reel] > getReelHeight() - 1) {
+			this.reelCharPos[reel] -= this.getReelHeight(); 
 		}
 		if(this.reelCharPos[reel] < 0) {
-			this.reelCharPos[reel] += this.reelCharPos[reel];
+			this.reelCharPos[reel] += this.getReelHeight();
 		}
+	}
+	public int getReelChar(int reel) {
+		return this.reelCharPos[reel] / this.reelChipHeight;
+	}
+	
+	public int getReelCharByIndex(int reel,int index) {
+		index = this.getReelChar(reel) + index;
+		if(index < 0) index += this.reelLength;
+		if(index >= this.reelLength) index -= this.reelLength;
+		return index;
+	}
+	
+	public int getReelChip(int reel,int index) {
+		return this.reelArray.get(reel).get(index);
 	}
 	public int getReelCharPos(int reel) {
 		return this.reelCharPos[reel];
