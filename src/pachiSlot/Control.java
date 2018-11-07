@@ -3,7 +3,8 @@ import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;;
+import java.util.ArrayList;
+import java.util.Arrays;;
 public class Control {
 	private int controlCount;
 	private int reelLength;
@@ -52,8 +53,8 @@ public class Control {
 			}
 			this.chipLength++;
 			this.reel = new Reel(reelArray);
-
 			this.yakuList = new ArrayList<Yaku>();
+			this.yakuList.add(new Yaku(Role.はずれ,0x7000));
 			for(int i = 0;i < this.yakuCount;i++) {
 				int tmp = stream.read();
 				tmp += stream.read() << 8;
@@ -62,9 +63,16 @@ public class Control {
 						tmp += (0xF000 << j * 4);
 					}
 				}
-				this.yakuList.add(new Yaku(tmp));
+				Role r = null;
+				for(Role role : Role.values()) {
+					if(role.ordinal() == i + 1) {
+						r = role;
+						break;
+					}
+				}
+				this.yakuList.add(new Yaku(r,tmp));
 			}
-
+			this.yakuCount++;
 			this.betLine = new ArrayList<ArrayList<Integer>>();
 			
 			for(int i = 0;i < this.maxLine;i++) {
@@ -119,6 +127,11 @@ public class Control {
 		this.stopPos[this.stopCount] = (pos - slide + this.reelLength) % this.reelLength;
 		this.reelStopPos[reel] = this.stopPos[this.stopCount];
 		int ret = this.stopPos[this.stopCount];
+		ret = pos - ret;
+		if(ret < 0) {
+			ret = this.reelLength + ret;
+		}
+		//System.out.println("pos:"+ret);
 		this.stopCount = this.stopCount + 1 == 3 ? 0 : this.stopCount + 1;
 		return ret;
 	}
@@ -149,6 +162,56 @@ public class Control {
 			break;
 		}
 		return ret;
+	}
+	public ArrayList<HitEvent> getHit(int betCoin) {
+		int reelPos[] = new int[3];
+		ArrayList<HitEvent> ret = new ArrayList<HitEvent>();
+		for(int i=0;i<3;i++) {
+			reelPos[i] = this.reel.getReelChar(i);
+		}
+	    for (int i = 0; i < this.maxLine; i++) {
+	        boolean matrix[][] = {
+	        		{false,false,false},
+	        		{false,false,false},
+	        		{false,false,false}
+	    	};
+	        ArrayList<Integer> line = this.betLine.get(i);
+	        int[] lineChar = new int[3];
+	        if (line.get(3) > betCoin) {
+	            continue;
+	        }
+	        for (int j = 0; j < 3; j++) {
+	            matrix[line.get(j)][j] = true;
+	            lineChar[j] = this.reel.getReelChip(j,this.reel.getReelCharByIndex(j, line.get(j)));
+	        }
+	        for(int k=0;k<this.yakuCount;k++) {
+	        	Yaku yaku = yakuList.get(k);
+	        	int num = yaku.num;
+	        	int yakuMode;
+	        	int yakuArray[] = new int[3];
+	        	yakuArray[0] = num & 0xf;
+	        	num = num >> 4;
+        		yakuArray[1] = num & 0xf;
+        		num = num >> 4;
+    			yakuArray[2] = num & 0xf;
+    			num = num >> 4;
+    			yakuMode = num & 0xf;
+    			num = num >> 4;
+				//System.out.printf("%d %d %d %n",yakuArray[0],yakuArray[1],yakuArray[2]);
+				boolean hitFlag = true;
+				for(int f=0;f<3;f++) {
+					if((lineChar[f] == yakuArray[f] || yakuArray[f] == 0xF) && (yakuMode & (1 << (3-betCoin))) != 0) {
+						
+					}else {
+						hitFlag = false;
+						break;
+					}
+				}
+				if(!hitFlag) continue;
+				ret.add(new HitEvent(matrix, this.yakuList.get(k)));
+	        }
+	    }
+	    return ret;
 	}
 	private int wpeek(ArrayList<Integer> arr,int idx) {
 		int ret = 0;

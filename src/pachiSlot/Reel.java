@@ -7,6 +7,9 @@ public class Reel {
 	public int[] reelCharPos = {0,0,0};
 	public int reelChipHeight;
 	public int reelLength;
+	public ReelState[] reelStates = {ReelState.Stop,ReelState.Stop,ReelState.Stop};
+	public int[] slipLengths = {0,0,0};
+	
 	public Reel(ArrayList<ArrayList<Integer>> reelArray) {
 		this.reelArray = reelArray;
 		this.reelLength = reelArray.get(0).size();
@@ -35,10 +38,33 @@ public class Reel {
 		return index;
 	}
 	
+	
+	public int getReelChip(int reel) {
+		return this.reelArray.get(reel).get(this.getReelChar(reel));
+	}
 	public int getReelChip(int reel,int index) {
 		return this.reelArray.get(reel).get(index);
 	}
 	public int getReelCharPos(int reel) {
 		return this.reelCharPos[reel];
+	}
+	public void slipReel(int reel, int reelPower) {
+		reelPower = reelPower;
+		if(reelPower > this.slipLengths[reel]) reelPower = this.slipLengths[reel];
+		this.slipLengths[reel] -= reelPower;
+		this.rollReel(reel, reelPower);
+		if(this.slipLengths[reel] == 0) {
+			this.reelStates[reel] = ReelState.Stop;
+		}
+	}
+	public void Stop(int reel,int slip) {
+		if(this.reelStates[reel] != ReelState.Rolling) return;
+		this.slipLengths[reel] = slip * this.reelChipHeight +(this.reelCharPos[reel] - this.getReelChar(reel) * this.reelChipHeight);
+		this.reelStates[reel] = ReelState.Slipping;
+	}
+	public void Start() {
+		for(int i=0;i<3;i++) {
+			this.reelStates[i] = ReelState.Rolling;
+		}
 	}
 }
