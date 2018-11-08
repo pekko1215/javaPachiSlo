@@ -1,9 +1,12 @@
 package pachiSlot;
 import java.net.URL;
-import java.util.Set;
 
-
-import pachiSlot.lots.*;
+import pachiSlot.lots.BIG;
+import pachiSlot.lots.Bell;
+import pachiSlot.lots.HighCherry;
+import pachiSlot.lots.LowCherry;
+import pachiSlot.lots.Melon;
+import pachiSlot.lots.Replay;
 
 public class Slot {
 	public int betCoin;
@@ -15,22 +18,23 @@ public class Slot {
 	public Lot bonusFlag = null;
 	public ControlCode controlCode;
 	public boolean isReplay = false;
-	
+
 	public Slot(URL url) {
 		this.control = new Control(url);
 		this.reel = control.reel;
 		this.Initialize();
 	}
-	
+
 	private void Initialize() {
 		this.LotInitialize();
-		
+
 	}
 	private void LotInitialize() {
 		this.lotManager.add(new Replay());
 		this.lotManager.add(new Bell());
 		this.lotManager.add(new Melon());
-		this.lotManager.add(new Cherry());
+		this.lotManager.add(new HighCherry());
+		this.lotManager.add(new LowCherry());
 		this.lotManager.add(new BIG());
 	}
 
@@ -41,7 +45,7 @@ public class Slot {
 		this.gameState = GameState.Beted;
 		return true;
 	}
-	
+
 	public boolean LeverOn() {
 		if(this.gameState != GameState.Beted) return false;
 		Lot lot = this.Lottery();
@@ -51,14 +55,14 @@ public class Slot {
 		this.gameState = GameState.Wait;
 		return true;
 	}
-	
+
 	public boolean WaitEnd() {
 		if(this.gameState != GameState.Wait) return false;
 		this.gameState = GameState.Rolling;
 		this.reel.Start();
 		return true;
 	}
-	
+
 	public Lot Lottery() {
 		Lot lot = new Lot();
 		switch(gamemode) {
@@ -83,29 +87,28 @@ public class Slot {
 				this.isReplay = true;
 				break;
 			case プラム:
-				arr[0] = 15;
-				arr[1] = 15;
-				arr[2] = 7;
+				arr[0] = 14;
+				arr[1] = 14;
+				arr[2] = 1;
 				pay = arr[this.betCoin - 1];
 				break;
 			case スイカ:
 				arr[0] = 0;
 				arr[1] = 0;
-				arr[2] = 14;
+				arr[2] = 3;
 				pay = arr[this.betCoin - 1];
 				break;
-			case チェリー:
-				arr[0] = 2;
-				arr[1] = 2;
-				arr[2] = 2;
+			case 弱チェリー:
+			case 強チェリー:
+				arr[0] = 0;
+				arr[1] = 0;
+				arr[2] = 4;
 				pay = arr[this.betCoin - 1];
 				break;
 			case 赤7:
 			case 青7:
-				arr[0] = 15;
-				arr[1] = 15;
-				arr[2] = 15;
-				pay = arr[this.betCoin - 1];
+			case BAR:
+				pay = 0;
 		}
 		return pay;
 	}

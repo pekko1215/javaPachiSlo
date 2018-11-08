@@ -5,21 +5,17 @@ import pachiSlot.GameMode;
 import pachiSlot.Lot;
 import pachiSlot.Slot;
 
-public class Melon extends Lot{
+public class HighCherry extends Lot{
 
 	public Slot slot;
-
-	public Melon() {
-		// TODO 自動生成されたコンストラクター・スタブ
-	}
-	public String name = "スイカ";
+	public String name = "強チェリー";
 	public int getProbability(Slot slot) {
 		if(slot.gamemode != GameMode.Normal) return 0;
-		return 32768 * 1 / 64;
+		return 32768 * 1 / 210;
 	}
 
 	@Override
 	public ControlCode getControlCode(Slot slot) {
-		return ControlCode.スイカ;
+		return ControlCode.強チェリー;
 	}
 }

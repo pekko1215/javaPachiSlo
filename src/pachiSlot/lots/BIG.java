@@ -26,18 +26,17 @@ public class BIG extends Lot{
 		switch(r) {
 			case 0:
 			case 1:
-				return ControlCode.滑りなしリーチ目;
 			case 2:
+				return ControlCode.チャンスプラム;
 			case 3:
-				return ControlCode.プラムハズレリーチ目;
 			case 4:
 			case 5:
-				return ControlCode.並行ベルハズレ;
+				return ControlCode.強チェリー;
 			case 6:
 			case 7:
-				return ControlCode.斜めベルハズレ;
+				return ControlCode.スイカ;
 			case 8:
-				return ControlCode.滑りブランクリーチ目;
+				return ControlCode.弱チェリー;
 		}
 		return null;
 	}
