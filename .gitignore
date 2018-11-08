@@ -29,9 +29,9 @@ target
 # Build
 out
 build
-bin
 
 # Other
 *.log
 *.swp
 *.bak
+/bin/
