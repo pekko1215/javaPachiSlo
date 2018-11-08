@@ -270,7 +270,6 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 				try {
 					Thread.sleep(len);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				Bet(slot.betCoin);
@@ -289,7 +288,6 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 				try {
 					Thread.sleep(len);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				Resume();
