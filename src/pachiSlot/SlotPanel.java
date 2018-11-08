@@ -1,26 +1,19 @@
 package pachiSlot;
 
-import java.net.URL;
-import java.util.ArrayList;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Timer;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
-import javafx.scene.input.KeyCode;
 import utilities.SoundPlayer;
-
-import java.util.TimerTask;
-import java.util.Timer;
 public class SlotPanel extends JPanel implements Runnable , KeyListener{
 	private Slot slot;
 	private Timer timer;
@@ -32,14 +25,14 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 	private int ChipWidth;
 	private int ChipHeight;
 	private int reelMargin = 30;
-	
+
 	public SlotPanel(Slot slot){
 		this.slot = slot;
 		this.addKeyListener(this);
 		this.setFocusable(true);
 		this.loadImage();
 		this.Start();
-		this.setBackground(Color.gray); 
+		this.setBackground(Color.gray);
 	}
 	private void loadImage() {
 		URL url = getClass().getResource("Resources/img/reelchip.png");
@@ -54,20 +47,20 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 			e.printStackTrace();
 		}
 	}
-	
+
 	private synchronized void Start() {
 		if(thread == null) {
 			thread = new Thread(this);
 			thread.start();
 		}
 	}
-	
+
 	private synchronized void Stop() {
 		if(thread != null) {
 			thread = null;
 		}
 	}
-	
+
 	private void Pay() {
 		this.slot.gameState = GameState.Pay;
 		ArrayList<HitEvent> list = this.slot.control.getHit(this.slot.betCoin);
@@ -101,18 +94,18 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 			}
 		}
 	}
-	
+
 	private ArrayList<BufferedImage> splitImages(BufferedImage buffer){
 		ArrayList<BufferedImage> list = new ArrayList<BufferedImage>();
 		int length = this.slot.control.chipLength;
 		int height = buffer.getHeight() / length;
-		
+
 		for(int i=0;i < length;i ++) {
 			list.add(buffer.getSubimage(0,i*height,buffer.getWidth(),height));
 		}
 		return list;
 	}
-	
+
 
 	public boolean stopReel(int reel) {
 		//重視
@@ -123,7 +116,7 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 		PlaySound("stop.wav");
 		return true;
 	}
-	
+
 	private void updateReel() {
 		int reelPower = (int)((1000. / FPS ) / reelSpeed * this.slot.reel.getReelHeight());
 		boolean stopFlag = true;
@@ -145,7 +138,7 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 			this.Pay();
 		}
 	}
-	
+
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
@@ -201,19 +194,19 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 	private void PlaySound(String name) {
 		new SoundPlayer(getClass().getResource("Resources/sound/"+name)).Play();
 	}
-	
+
 	private void LoopSound(String name) {
 		new SoundPlayer(getClass().getResource("Resources/sound/"+name),true).Play();
 	}
-	
+
 	@Override
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 	@Override
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }
