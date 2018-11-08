@@ -1,4 +1,7 @@
-package pachiSlot;
+package pachiSlot.lots;
+
+import pachiSlot.ControlCode;
+import pachiSlot.Slot;
 
 public class Lot {
 	public String name = null;

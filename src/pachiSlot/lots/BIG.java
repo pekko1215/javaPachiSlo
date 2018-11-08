@@ -4,7 +4,6 @@ import java.util.Random;
 
 import pachiSlot.ControlCode;
 import pachiSlot.GameMode;
-import pachiSlot.Lot;
 import pachiSlot.Slot;
 
 public class BIG extends Lot{
@@ -13,12 +12,12 @@ public class BIG extends Lot{
 	public String name = "BIG";
 	public int getProbability(Slot slot) {
 		if(slot.gamemode != GameMode.Normal) return 0;
-		return 32768 * 1 / 128;
+		return 32768 * 1 / 18;
 	}
 
 	@Override
 	public ControlCode getControlCode(Slot slot) {
-		int r = (new Random()).nextInt(9);
+		int r = (new Random()).nextInt(13);
 		if(slot.bonusFlag == this) {
 			return ControlCode.BIG;
 		}
@@ -37,6 +36,13 @@ public class BIG extends Lot{
 				return ControlCode.スイカ;
 			case 8:
 				return ControlCode.弱チェリー;
+			case 9:
+			case 10:
+				return ControlCode.リーチ目リプレイ;
+			case 11:
+			case 12:
+				return ControlCode.リーチ目1枚;
+
 		}
 		return null;
 	}

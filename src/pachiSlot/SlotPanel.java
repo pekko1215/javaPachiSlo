@@ -12,7 +12,6 @@ import java.util.Timer;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 import utilities.SoundPlayer;
 public class SlotPanel extends JPanel implements Runnable , KeyListener{
@@ -25,9 +24,12 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 	private final double reelSpeed = 780;
 	private int ChipWidth;
 	private int ChipHeight;
-	private int reelMargin = 30;
+	private int reelMarginTop = 130;
+	private int reelMarginLeft = 30;
 	private boolean isFreeze = false;
-	
+	private final int FrameTop = 30;
+	private final int FrameBottom = 30;
+
 	public SlotPanel(Slot slot){
 		this.slot = slot;
 		this.addKeyListener(this);
@@ -82,6 +84,7 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 		 * 描写するのは5つのみ
 		 * 枠上、上、中、下、枠下
 		 */
+		graphics.drawRect(reelMarginLeft, reelMarginTop, ChipWidth*3, ChipHeight*3 + FrameBottom + FrameTop);
 		if(this.reelChips.size() != 0) {
 			Reel reel = this.slot.reel;
 			for(int i = 0;i < 3; i ++) {
@@ -91,8 +94,65 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 				for(int k = -1;k <= 3;k++) {
 					int chip = reel.getReelCharByIndex(i,k);
 					int imgIndex = reel.getReelChip(i, chip);
-					int top = k * reel.reelChipHeight + reelDiff + this.reelMargin;
-					graphics.drawImage(this.reelChips.get(imgIndex), ChipWidth * i, top, null);
+					int top = k * reel.reelChipHeight + FrameTop + reelDiff + this.reelMarginTop;
+					switch(k) {
+						case 0:
+						case 1:
+						case 2:
+							if(top < reelMarginTop) {
+								graphics.drawImage(
+									this.reelChips.get(imgIndex),
+									ChipWidth * i + reelMarginLeft,
+									reelMarginTop,
+									ChipWidth * (i+1) + reelMarginLeft,
+									-reelDiff + reelMarginTop,
+									0,
+									ChipHeight + reelDiff,
+									ChipWidth,
+									ChipHeight,
+									null);
+								break;
+							}
+							graphics.drawImage(
+								this.reelChips.get(imgIndex),
+								ChipWidth * i + reelMarginLeft,
+								top,
+								null
+							);
+							break;
+						case -1:
+							if(reelDiff != 0 && reelDiff < ChipHeight -  FrameTop) continue;
+							int tmp = reelDiff == 0 ? ChipHeight : reelDiff;
+							graphics.drawImage(
+									this.reelChips.get(imgIndex),
+
+									ChipWidth * i + reelMarginLeft,
+									reelMarginTop,
+									ChipWidth * (i+1) + reelMarginLeft,
+									FrameTop + reelMarginTop,
+
+									0,
+									ChipHeight - FrameTop,
+									ChipWidth,
+									ChipHeight,
+									null);
+							break;
+						case 3:
+							int chipDiff = FrameBottom - reelDiff;
+							graphics.drawImage(
+									this.reelChips.get(imgIndex),
+									ChipWidth * i + reelMarginLeft,
+									top + (k == -1 ?  - top + reelMarginTop : 0),
+									ChipWidth * (i+1) + reelMarginLeft,
+									top + (k == 3 ? chipDiff : ChipHeight),
+
+									0,
+									k == -1 ?ChipHeight - reelDiff: 0,
+									ChipWidth,
+									k == 3 ? chipDiff : ChipHeight,
+									null);
+							break;
+					}
 				}
 			}
 		}
@@ -168,7 +228,7 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 		switch(e.getKeyCode()) {
 		case KeyEvent.VK_UP:
 			if(this.slot.gameState == GameState.BetWait) {
-				this.Bet(3);
+				this.Bet();
 				break;
 			}
 			if(this.slot.gameState == GameState.Beted) {
@@ -211,14 +271,18 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 			break;
 		}
 	}
-	
+
 	private void Bet(int coin) {
 		if(!this.slot.isReplay) {
 			PlaySound("bet.wav");
 		}
 		this.slot.Bet(coin);
 	}
-	
+
+	private void Bet() {
+		this.Bet(this.slot.getMaxBet());
+	}
+
 	private void LeverOn() {
 		this.slot.LeverOn();
 		PlaySound("start.wav");
@@ -249,11 +313,11 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 	private void Freeze() {
 		this.isFreeze = true;
 	}
-	
+
 	private void Resume() {
 		this.isFreeze = false;
 	}
-	
+
 	private void Replay() {
 		this.Freeze();
 		long len = this.PlaySound("replay.wav");

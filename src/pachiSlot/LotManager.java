@@ -3,6 +3,8 @@ package pachiSlot;
 import java.util.ArrayList;
 import java.util.Random;
 
+import pachiSlot.lots.Lot;
+
 public class LotManager {
 	private ArrayList<Lot> lots;
 	public LotManager() {

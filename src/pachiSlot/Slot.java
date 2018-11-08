@@ -1,9 +1,14 @@
 package pachiSlot;
 import java.net.URL;
+import java.util.Random;
 
+import pachiSlot.bonus.Bonus;
+import pachiSlot.bonus.BonusType5;
 import pachiSlot.lots.BIG;
 import pachiSlot.lots.Bell;
+import pachiSlot.lots.ChancePlum;
 import pachiSlot.lots.HighCherry;
+import pachiSlot.lots.Lot;
 import pachiSlot.lots.LowCherry;
 import pachiSlot.lots.Melon;
 import pachiSlot.lots.Replay;
@@ -18,6 +23,7 @@ public class Slot {
 	public Lot bonusFlag = null;
 	public ControlCode controlCode;
 	public boolean isReplay = false;
+	public Bonus bonus = null;
 
 	public Slot(URL url) {
 		this.control = new Control(url);
@@ -35,6 +41,7 @@ public class Slot {
 		this.lotManager.add(new Melon());
 		this.lotManager.add(new HighCherry());
 		this.lotManager.add(new LowCherry());
+		this.lotManager.add(new ChancePlum());
 		this.lotManager.add(new BIG());
 	}
 
@@ -70,8 +77,16 @@ public class Slot {
 				lot = lotManager.lot((e)->{
 					return e.getProbability(this);
 				});
+				if(lot instanceof Lot) {
+					if(this.bonusFlag != null) {
+						if(new Random().nextInt(4)<3) {
+							lot = new Replay();
+						}
+					}
+				}
 				break;
 			case Bonus:
+				lot = new Bell();
 				break;
 			case Jac:
 				break;
@@ -105,11 +120,38 @@ public class Slot {
 				arr[2] = 4;
 				pay = arr[this.betCoin - 1];
 				break;
+			case 赤8枚役:
+			case 青8枚役:
+			case BAR8枚役:
+				pay = this.betCoin == 3 ? 8 : 15;
+				break;
 			case 赤7:
 			case 青7:
 			case BAR:
+				this.gamemode = GameMode.Bonus;
+				this.bonusFlag = null;
+				this.bonus = new BonusType5(this,210,yaku.role);
 				pay = 0;
+				break;
+			case 突入リプレイ1:
+			case 突入リプレイ2:
+			case 突入リプレイ3:
+			case 突入リプレイ4:
+				isReplay = true;
+		}
+		if(this.bonus != null && pay != 0) {
+			this.bonus.onPay(pay);
 		}
 		return pay;
+	}
+
+	public int getMaxBet() {
+		switch(this.gamemode) {
+			case Normal:
+				return 3;
+			case Bonus:
+				return 2;
+		}
+		return 0;
 	}
 }

@@ -2,7 +2,6 @@ package pachiSlot.lots;
 
 import pachiSlot.ControlCode;
 import pachiSlot.GameMode;
-import pachiSlot.Lot;
 import pachiSlot.Slot;
 
 public class HighCherry extends Lot{
