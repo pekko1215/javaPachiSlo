@@ -6,8 +6,9 @@ import pachiSlot.Slot;
 
 public class LowCherry extends Lot{
 
-	public Slot slot;
-	public String name = "弱チェリー";
+	public LowCherry() {
+		this.name = "弱チェリー";
+	}
 	public int getProbability(Slot slot) {
 		if(slot.gamemode != GameMode.Normal) return 0;
 		return 32768 * 1 / 64;

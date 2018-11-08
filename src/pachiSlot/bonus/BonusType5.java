@@ -3,6 +3,7 @@ package pachiSlot.bonus;
 import pachiSlot.GameMode;
 import pachiSlot.Role;
 import pachiSlot.Slot;
+import pachiSlot.replayTime.Normal;
 
 public class BonusType5 extends Bonus {
 
@@ -24,6 +25,7 @@ public class BonusType5 extends Bonus {
 		if(this.getLast() <= 0) {
 			this.slot.bonus = null;
 			this.slot.gamemode = GameMode.Normal;
+			this.slot.replayTime = new Normal(this.slot);
 		}
 		// TODO 自動生成されたメソッド・スタブ
 

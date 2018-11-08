@@ -1,6 +1,5 @@
 package pachiSlot;
 import java.net.URL;
-import java.util.Random;
 
 import pachiSlot.bonus.Bonus;
 import pachiSlot.bonus.BonusType5;
@@ -12,6 +11,8 @@ import pachiSlot.lots.Lot;
 import pachiSlot.lots.LowCherry;
 import pachiSlot.lots.Melon;
 import pachiSlot.lots.Replay;
+import pachiSlot.replayTime.Normal;
+import pachiSlot.replayTime.ReplayTime;
 
 public class Slot {
 	public int betCoin;
@@ -24,6 +25,7 @@ public class Slot {
 	public ControlCode controlCode;
 	public boolean isReplay = false;
 	public Bonus bonus = null;
+	public ReplayTime replayTime = new Normal(this);
 
 	public Slot(URL url) {
 		this.control = new Control(url);
@@ -77,13 +79,7 @@ public class Slot {
 				lot = lotManager.lot((e)->{
 					return e.getProbability(this);
 				});
-				if(lot instanceof Lot) {
-					if(this.bonusFlag != null) {
-						if(new Random().nextInt(4)<3) {
-							lot = new Replay();
-						}
-					}
-				}
+				lot = this.replayTime.onLot(lot);
 				break;
 			case Bonus:
 				lot = new Bell();
@@ -142,6 +138,7 @@ public class Slot {
 		if(this.bonus != null && pay != 0) {
 			this.bonus.onPay(pay);
 		}
+		this.replayTime.onHit(yaku.role);
 		return pay;
 	}
 

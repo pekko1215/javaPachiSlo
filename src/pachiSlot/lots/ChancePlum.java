@@ -6,9 +6,10 @@ import pachiSlot.Slot;
 
 public class ChancePlum extends Lot{
 
-	public Slot slot;
+	public ChancePlum() {
+		this.name = "チャンスプラム";
+	}
 
-	public String name = "チャンスプラム";
 	public int getProbability(Slot slot) {
 		if(slot.gamemode != GameMode.Normal) return 0;
 		int p = new BIG().getProbability(slot) / 3 * 2;
