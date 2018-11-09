@@ -24,11 +24,12 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 	private final double reelSpeed = 780;
 	private int ChipWidth;
 	private int ChipHeight;
-	private int reelMarginTop = 130;
-	private int reelMarginLeft = 30;
+	private final int reelMarginTop = 50;
+	private final int reelMarginLeft = 180;
 	private boolean isFreeze = false;
 	private final int FrameTop = 30;
 	private final int FrameBottom = 30;
+	private ReelLight reelLight;
 
 	public SlotPanel(Slot slot){
 		this.slot = slot;
@@ -36,6 +37,7 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 		this.setFocusable(true);
 		this.loadImage();
 		this.Start();
+		this.reelLight = new ReelLight(this.slot,reelMarginLeft,reelMarginTop + ChipHeight * 3 + FrameTop + FrameBottom + 10);
 		this.setBackground(Color.gray);
 	}
 	private void loadImage() {
@@ -84,7 +86,7 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 		 * 描写するのは5つのみ
 		 * 枠上、上、中、下、枠下
 		 */
-		graphics.drawRect(reelMarginLeft, reelMarginTop, ChipWidth*3, ChipHeight*3 + FrameBottom + FrameTop);
+		graphics.drawRect(reelMarginLeft, reelMarginTop, ChipWidth*3, ChipHeight*4 - FrameTop - FrameBottom);
 		if(this.reelChips.size() != 0) {
 			Reel reel = this.slot.reel;
 			for(int i = 0;i < 3; i ++) {
@@ -100,14 +102,16 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 						case 1:
 						case 2:
 							if(top < reelMarginTop) {
+								int tmp = ChipHeight + reelDiff + FrameTop;
 								graphics.drawImage(
 									this.reelChips.get(imgIndex),
 									ChipWidth * i + reelMarginLeft,
-									reelMarginTop,
+									reelMarginTop ,//
 									ChipWidth * (i+1) + reelMarginLeft,
-									-reelDiff + reelMarginTop,
+									reelMarginTop + tmp,//
+									
 									0,
-									ChipHeight + reelDiff,
+									ChipHeight - tmp,//
 									ChipWidth,
 									ChipHeight,
 									null);
@@ -138,24 +142,27 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 									null);
 							break;
 						case 3:
-							int chipDiff = FrameBottom - reelDiff;
+							if(top - reelMarginTop > ChipHeight * 4 - FrameTop - FrameBottom ) continue;
+							
+							int chipH = reelMarginTop + ChipHeight * 4 - FrameTop - FrameBottom - top;
 							graphics.drawImage(
 									this.reelChips.get(imgIndex),
 									ChipWidth * i + reelMarginLeft,
-									top + (k == -1 ?  - top + reelMarginTop : 0),
+									top ,
 									ChipWidth * (i+1) + reelMarginLeft,
-									top + (k == 3 ? chipDiff : ChipHeight),
+									reelMarginTop + ChipHeight * 4 - FrameTop - FrameBottom,
 
 									0,
-									k == -1 ?ChipHeight - reelDiff: 0,
+									0,
 									ChipWidth,
-									k == 3 ? chipDiff : ChipHeight,
+									chipH,
 									null);
 							break;
 					}
 				}
 			}
 		}
+		reelLight.draw(graphics);
 	}
 
 	private ArrayList<BufferedImage> splitImages(BufferedImage buffer){

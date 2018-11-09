@@ -30,6 +30,7 @@ public class SoundPlayer {
 			clip = (Clip)AudioSystem.getLine(dataLine);
 			//Ä¶€”õŠ®—¹
 			clip.loop(isLoop ? clip.LOOP_CONTINUOUSLY : 0);
+			
 			clip.open(ais);
 		} catch (UnsupportedAudioFileException | IOException e) {
 			// TODO Auto-generated catch block
