@@ -5,6 +5,7 @@ import java.util.Random;
 import pachiSlot.ControlCode;
 import pachiSlot.GameMode;
 import pachiSlot.Slot;
+import pachiSlot.replayTime.BonusReplayTime;
 
 public class BIG extends Lot{
 
@@ -13,7 +14,7 @@ public class BIG extends Lot{
 	}
 	public int getProbability(Slot slot) {
 		if(slot.gamemode != GameMode.Normal) return 0;
-		return 32768 * 1 / 180;
+		return 32768 * 1 / 18;
 	}
 
 	@Override
@@ -23,6 +24,7 @@ public class BIG extends Lot{
 			return ControlCode.BIG;
 		}
 		slot.bonusFlag = this;
+		slot.replayTime = new BonusReplayTime(slot);
 		switch(r) {
 			case 0:
 			case 1:

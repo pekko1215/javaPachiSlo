@@ -26,6 +26,7 @@ public class Slot {
 	public boolean isReplay = false;
 	public Bonus bonus = null;
 	public ReplayTime replayTime = new Normal(this);
+	public int credit = 50;
 
 	public Slot(URL url) {
 		this.control = new Control(url);
@@ -52,6 +53,7 @@ public class Slot {
 		if(this.gameState != GameState.BetWait) return false;
 		this.betCoin = coin;
 		this.gameState = GameState.Beted;
+		this.addCredit(-coin);
 		return true;
 	}
 
@@ -133,12 +135,14 @@ public class Slot {
 			case 突入リプレイ2:
 			case 突入リプレイ3:
 			case 突入リプレイ4:
+			case 突入リプレイ5:
 				isReplay = true;
 		}
 		if(this.bonus != null && pay != 0) {
 			this.bonus.onPay(pay);
 		}
 		this.replayTime.onHit(yaku.role);
+		this.addCredit(pay);
 		return pay;
 	}
 
@@ -150,5 +154,11 @@ public class Slot {
 				return 2;
 		}
 		return 0;
+	}
+
+	private void addCredit(int coin) {
+		this.credit += coin;
+		if(this.credit < 0)this.credit = 0;
+		if(this.credit > 50)this.credit = 50;
 	}
 }

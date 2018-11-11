@@ -13,6 +13,8 @@ import java.util.Timer;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+import pachiSlot.segment.PaySegment;
+import pachiSlot.segment.SimpleSegment;
 import utilities.SoundPlayer;
 public class SlotPanel extends JPanel implements Runnable , KeyListener{
 	private Slot slot;
@@ -30,6 +32,8 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 	private final int FrameTop = 30;
 	private final int FrameBottom = 30;
 	private ReelLight reelLight;
+	private PaySegment paySegment;
+	private SimpleSegment creditSegment;
 
 	public SlotPanel(Slot slot){
 		this.slot = slot;
@@ -38,6 +42,8 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 		this.loadImage();
 		this.Start();
 		this.reelLight = new ReelLight(this.slot,reelMarginLeft,reelMarginTop + ChipHeight * 3 + FrameTop + FrameBottom + 10);
+		this.paySegment = new PaySegment(3, 490);
+		this.creditSegment = new SimpleSegment(98, 490);
 		this.setBackground(Color.gray);
 	}
 	private void loadImage() {
@@ -86,6 +92,9 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 		 * 描写するのは5つのみ
 		 * 枠上、上、中、下、枠下
 		 */
+		this.paySegment.draw(graphics);
+		this.creditSegment.draw(graphics);
+		this.creditSegment.value = "" + slot.credit;
 		graphics.drawRect(reelMarginLeft, reelMarginTop, ChipWidth*3, ChipHeight*4 - FrameTop - FrameBottom);
 		if(this.reelChips.size() != 0) {
 			Reel reel = this.slot.reel;
@@ -109,7 +118,7 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 									reelMarginTop ,//
 									ChipWidth * (i+1) + reelMarginLeft,
 									reelMarginTop + tmp,//
-									
+
 									0,
 									ChipHeight - tmp,//
 									ChipWidth,
@@ -143,7 +152,7 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 							break;
 						case 3:
 							if(top - reelMarginTop > ChipHeight * 4 - FrameTop - FrameBottom ) continue;
-							
+
 							int chipH = reelMarginTop + ChipHeight * 4 - FrameTop - FrameBottom - top;
 							graphics.drawImage(
 									this.reelChips.get(imgIndex),
@@ -284,6 +293,7 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 			PlaySound("bet.wav");
 		}
 		this.slot.Bet(coin);
+		this.paySegment.reset();
 	}
 
 	private void Bet() {
@@ -357,5 +367,6 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 				Resume();
 			}
 		}).start();
+		this.paySegment.setPay(pay);
 	}
 }

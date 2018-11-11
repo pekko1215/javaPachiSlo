@@ -21,6 +21,10 @@ public class Bell extends Lot{
 	@Override
 	public ControlCode getControlCode(Slot slot) {
 		if(slot.gamemode != GameMode.Normal) return ControlCode.ボーナス制御;
+		if(slot.bonusFlag != null) {
+			ControlCode arr[] = {ControlCode.共通8枚役,slot.bonusFlag.getControlCode(slot),slot.bonusFlag.getControlCode(slot)};
+			return arr[new Random().nextInt(arr.length)];
+		}
 		ControlCode arr[] = {ControlCode.赤8枚,ControlCode.青8枚,ControlCode.BAR8枚};
 		return arr[new Random().nextInt(arr.length)];
 	}
