@@ -3,6 +3,7 @@ import java.net.URL;
 
 import pachiSlot.bonus.Bonus;
 import pachiSlot.bonus.BonusType5;
+import pachiSlot.effect.Art;
 import pachiSlot.lots.BIG;
 import pachiSlot.lots.Bell;
 import pachiSlot.lots.ChancePlum;
@@ -27,6 +28,7 @@ public class Slot {
 	public Bonus bonus = null;
 	public ReplayTime replayTime = new Normal(this);
 	public int credit = 50;
+	public Art art;
 
 	public Slot(URL url) {
 		this.control = new Control(url);
@@ -61,7 +63,19 @@ public class Slot {
 		if(this.gameState != GameState.Beted) return false;
 		Lot lot = this.Lottery();
 		this.controlCode = lot.getControlCode(this);
-		System.out.println(this.controlCode);
+		if(this.art != null) {
+			if(!this.art.noLot) {
+				if(this.bonusFlag != null) {
+					this.art.noLot = true;
+				}
+				int stock = this.art.onLot(this.controlCode);
+				if(stock != 0) {
+					System.out.println("ストック"+stock+"獲得");
+				}
+			}
+			if(this.bonusFlag == null) this.art.noLot = false;
+			System.out.println(this.controlCode);
+		}
 		this.control.setReelControlCode(this.controlCode.ordinal());
 		this.gameState = GameState.Wait;
 		return true;
@@ -160,5 +174,11 @@ public class Slot {
 		this.credit += coin;
 		if(this.credit < 0)this.credit = 0;
 		if(this.credit > 50)this.credit = 50;
+	}
+	
+	public void Replay(int coin) {
+		if(this.gameState != GameState.BetWait) return;
+		this.betCoin = coin;
+		this.gameState = GameState.Beted;
 	}
 }

@@ -14,7 +14,7 @@ public class BIG extends Lot{
 	}
 	public int getProbability(Slot slot) {
 		if(slot.gamemode != GameMode.Normal) return 0;
-		return 32768 * 1 / 18;
+		return 32768 * 1 / 180;
 	}
 
 	@Override

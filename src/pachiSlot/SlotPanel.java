@@ -13,9 +13,13 @@ import java.util.Timer;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+import pachiSlot.bonus.BonusType5;
+import pachiSlot.replayTime.*;
+import pachiSlot.segment.EffectSegment;
 import pachiSlot.segment.PaySegment;
 import pachiSlot.segment.SimpleSegment;
 import utilities.SoundPlayer;
+
 public class SlotPanel extends JPanel implements Runnable , KeyListener{
 	private Slot slot;
 	private Timer timer;
@@ -34,7 +38,7 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 	private ReelLight reelLight;
 	private PaySegment paySegment;
 	private SimpleSegment creditSegment;
-
+	private EffectSegment effectSegment;
 	public SlotPanel(Slot slot){
 		this.slot = slot;
 		this.addKeyListener(this);
@@ -44,6 +48,7 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 		this.reelLight = new ReelLight(this.slot,reelMarginLeft,reelMarginTop + ChipHeight * 3 + FrameTop + FrameBottom + 10);
 		this.paySegment = new PaySegment(3, 490);
 		this.creditSegment = new SimpleSegment(98, 490);
+		this.effectSegment = new EffectSegment(780, 490);
 		this.setBackground(Color.gray);
 	}
 	private void loadImage() {
@@ -92,8 +97,11 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 		 * 描写するのは5つのみ
 		 * 枠上、上、中、下、枠下
 		 */
+		this.setEffectSeg(graphics);
 		this.paySegment.draw(graphics);
 		this.creditSegment.draw(graphics);
+		this.effectSegment.draw(graphics);
+		
 		this.creditSegment.value = "" + slot.credit;
 		graphics.drawRect(reelMarginLeft, reelMarginTop, ChipWidth*3, ChipHeight*4 - FrameTop - FrameBottom);
 		if(this.reelChips.size() != 0) {
@@ -346,7 +354,7 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				Bet(slot.betCoin);
+				slot.Replay(slot.betCoin);
 				slot.isReplay = false;
 				Resume();
 			}
@@ -368,5 +376,23 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 			}
 		}).start();
 		this.paySegment.setPay(pay);
+	}
+	
+	private void setEffectSeg(Graphics g) {
+		if(slot.bonusFlag != null) return;
+		if(this.slot.gamemode != GameMode.Normal) {
+			this.effectSegment.value = "" + ((BonusType5)this.slot.bonus).getLast();
+		}else {
+			if(slot.gameState != GameState.BetWait)return;
+			if(this.slot.replayTime instanceof Normal) {
+				this.effectSegment.value = "!CZ";
+				return;
+			}
+			if(this.slot.replayTime instanceof HighReplayTime) {
+				this.effectSegment.value = "" + ((HighReplayTime)this.slot.replayTime).game;
+				return;
+			}
+			this.effectSegment.value = "";
+		}
 	}
 }
