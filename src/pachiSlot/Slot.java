@@ -59,11 +59,12 @@ public class Slot {
 		return true;
 	}
 
-	public boolean LeverOn() {
-		if(this.gameState != GameState.Beted) return false;
+	public ControlCode LeverOn() {
+		if(this.gameState != GameState.Beted) return null;
 		Lot lot = this.Lottery();
 		this.controlCode = lot.getControlCode(this);
 		if(this.art != null) {
+			System.out.println("ストック数:"+this.art.stock);
 			if(!this.art.noLot) {
 				if(this.bonusFlag != null) {
 					this.art.noLot = true;
@@ -74,11 +75,10 @@ public class Slot {
 				}
 			}
 			if(this.bonusFlag == null) this.art.noLot = false;
-			System.out.println(this.controlCode);
 		}
 		this.control.setReelControlCode(this.controlCode.ordinal());
 		this.gameState = GameState.Wait;
-		return true;
+		return this.controlCode;
 	}
 
 	public boolean WaitEnd() {
@@ -155,6 +155,7 @@ public class Slot {
 		if(this.bonus != null && pay != 0) {
 			this.bonus.onPay(pay);
 		}
+		System.out.println(yaku.role);
 		this.replayTime.onHit(yaku.role);
 		this.addCredit(pay);
 		return pay;

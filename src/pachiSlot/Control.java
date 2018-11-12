@@ -184,7 +184,7 @@ public class Control {
 	            matrix[line.get(j)][j] = true;
 	            lineChar[j] = this.reel.getReelChip(j,this.reel.getReelCharByIndex(j, line.get(j)));
 	        }
-	        for(int k=0;k<this.yakuCount;k++) {
+	        for(int k=1;k<this.yakuCount;k++) {
 	        	Yaku yaku = yakuList.get(k);
 	        	int num = yaku.num;
 	        	int yakuMode;

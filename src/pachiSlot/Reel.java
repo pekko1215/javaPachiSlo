@@ -67,4 +67,13 @@ public class Reel {
 			this.reelStates[i] = ReelState.Rolling;
 		}
 	}
+	public int getReelCount(ReelState state) {
+		int r = 0;
+		for(int i=0;i<3;i++) {
+			if(this.reelStates[i] == state) {
+				r++;
+			}
+		}
+		return r;
+	}
 }

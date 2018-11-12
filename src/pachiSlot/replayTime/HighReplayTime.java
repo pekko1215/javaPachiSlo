@@ -17,9 +17,6 @@ public class HighReplayTime extends ReplayTime {
 	@Override
 	public Lot onLot(Lot original) {
 		// TODO 自動生成されたメソッド・スタブ
-		this.game--;
-		if(this.game == 0)this.slot.replayTime = new Normal(this.slot);
-		System.out.println(original.name);
 		if(original.name == null) {
 			return new Replay();
 		}
@@ -28,7 +25,8 @@ public class HighReplayTime extends ReplayTime {
 
 	@Override
 	public void onHit(Role role) {
-
+		this.game--;
+		if(this.game == 0)this.slot.replayTime = new Normal(this.slot);
 	}
 
 }

@@ -21,16 +21,17 @@ public class Art {
 	private boolean nextStepUp = false;
 	public ARTMode baseMode;
 	public int[] baseTable;
+	public int tableIndex;
 	public boolean noLot = false;
 	public Art() {
-		this.stock = Lot(this.startStockTable);
-		this.nextArt();
+		this.stock = this.Lot(this.startStockTable);
 	}
 	
 	public void nextArt() {
 		int m = 0;
 		if(this.modeIdx == -1 || this.modeIdx == this.baseTable.length) {
 			this.baseMapLot();
+			System.out.println("ARTテーブル:"+this.tableIndex);
 		}
 		int r = new Random().nextInt(100);
 		if(r < this.baseTable[modeIdx]) {
@@ -38,14 +39,17 @@ public class Art {
 		}
 		if(nextStepUp) {
 			m++;
+			nextStepUp = false;
 		}
 		this.modeIdx ++;
 		ARTMode[] arr = {ARTMode.Low,ARTMode.High,ARTMode.VeryHigh};
 		this.baseMode = arr[m];
+		System.out.println("ARTモード:"+this.baseMode);
 	}
 	
 	private void baseMapLot() {
-		this.baseTable = modeMap[this.Lot(modeTable)];
+		this.tableIndex = this.Lot(modeTable);
+		this.baseTable = modeMap[this.tableIndex];
 		this.modeIdx = 0;
 	}
 	
@@ -93,6 +97,11 @@ public class Art {
 			int loop = loopStockTable[this.baseMode.ordinal()];
 			while(new Random().nextInt(100) < loop) ret++;
 		}
+		if(ret > 0 && new Random().nextInt(10) == 0) {
+			this.nextStepUp = true;
+			System.out.println("次回高モード確定");
+		}
+		this.stock += ret;
 		return ret;
 	}
 }

@@ -33,6 +33,10 @@ public class Normal extends ReplayTime {
 				this.slot.replayTime = new HighReplayTime(this.slot,20);
 				if(this.slot.art == null) {
 					this.slot.art = new Art();
+				}else {
+					if(this.slot.art.stock > 0) {
+						this.slot.art.stock --;
+					}
 				}
 				this.slot.art.nextArt();
 				System.out.println(this.slot.art);

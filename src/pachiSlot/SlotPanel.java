@@ -14,6 +14,8 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import pachiSlot.bonus.BonusType5;
+import pachiSlot.effect.EffectManager;
+import pachiSlot.lots.Lot;
 import pachiSlot.replayTime.*;
 import pachiSlot.segment.EffectSegment;
 import pachiSlot.segment.PaySegment;
@@ -39,6 +41,7 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 	private PaySegment paySegment;
 	private SimpleSegment creditSegment;
 	private EffectSegment effectSegment;
+	private EffectManager effectManager;
 	public SlotPanel(Slot slot){
 		this.slot = slot;
 		this.addKeyListener(this);
@@ -49,6 +52,7 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 		this.paySegment = new PaySegment(3, 490);
 		this.creditSegment = new SimpleSegment(98, 490);
 		this.effectSegment = new EffectSegment(780, 490);
+		this.effectManager = new EffectManager(this.slot, this.reelLight);
 		this.setBackground(Color.gray);
 	}
 	private void loadImage() {
@@ -82,6 +86,7 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 		this.slot.gameState = GameState.Pay;
 		ArrayList<HitEvent> list = this.slot.control.getHit(this.slot.betCoin);
 		int pay = 0;
+		System.out.println(list.size());
 		for(HitEvent e : list) {
 			pay += this.slot.getPay(e.yaku);
 		}
@@ -306,11 +311,13 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 
 	private void Bet() {
 		this.Bet(this.slot.getMaxBet());
+		this.reelLight.clearReservation();
 	}
 
 	private void LeverOn() {
-		this.slot.LeverOn();
+		ControlCode code = this.slot.LeverOn();
 		PlaySound("start.wav");
+		this.effectManager.onLeverOn(code);
 	}
 
 	private long PlaySound(String name) {
