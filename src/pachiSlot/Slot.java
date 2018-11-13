@@ -150,6 +150,14 @@ public class Slot {
 			case 突入リプレイ3:
 			case 突入リプレイ4:
 			case 突入リプレイ5:
+
+			case リーチ目リプレイ1:
+			case リーチ目リプレイ2:
+			case リーチ目リプレイ3:
+			case リーチ目リプレイ4:
+			case リーチ目リプレイ5:
+			case リーチ目リプレイ6:
+			case リーチ目リプレイ7:
 				isReplay = true;
 		}
 		if(this.bonus != null && pay != 0) {
@@ -176,7 +184,7 @@ public class Slot {
 		if(this.credit < 0)this.credit = 0;
 		if(this.credit > 50)this.credit = 50;
 	}
-	
+
 	public void Replay(int coin) {
 		if(this.gameState != GameState.BetWait) return;
 		this.betCoin = coin;

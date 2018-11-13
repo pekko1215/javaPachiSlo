@@ -3,7 +3,6 @@ package pachiSlot.effect;
 import java.util.Random;
 
 import pachiSlot.ControlCode;
-import pachiSlot.lots.*;
 
 public class Art {
 	public int stock;
@@ -27,7 +26,7 @@ public class Art {
 	public Art() {
 		this.stock = this.Lot(this.startStockTable);
 	}
-	
+
 	public void nextArt() {
 		int m = 0;
 		if(this.modeIdx == -1 || this.modeIdx == this.baseTable.length) {
@@ -47,13 +46,13 @@ public class Art {
 		this.baseMode = arr[m];
 		System.out.println("ARTモード:"+this.baseMode);
 	}
-	
+
 	private void baseMapLot() {
 		this.tableIndex = this.Lot(modeTable);
 		this.baseTable = modeMap[this.tableIndex];
 		this.modeIdx = 0;
 	}
-	
+
 	public static int Lot(int[] table) {
 		int r = new Random().nextInt(100);
 		for(int i = 0;;i++) {
@@ -61,7 +60,7 @@ public class Art {
 			if(r<0) return i;
 		}
 	}
-	
+
 	public int onLot(ControlCode rcc) {
 		int ret = 0;
 		this.isPlus = false;
@@ -87,7 +86,7 @@ public class Art {
 				table[1] = 90;
 				table[2] = 100;
 				break;
-			case 突入左:
+			case リーチ目リプレイ:
 				table[0] = 1;
 				table[1] = 3;
 				table[2] = 77;

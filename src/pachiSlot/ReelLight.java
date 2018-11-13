@@ -3,10 +3,8 @@ package pachiSlot;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.net.URL;
 
 import javax.imageio.ImageIO;
-import javax.swing.JPanel;
 
 public class ReelLight {
 	private Slot slot;
@@ -19,7 +17,7 @@ public class ReelLight {
 	private int[] reelStopArr = {-1,-1,-1};
 	private int[] blinkTimer = {0, 0, 0};
 	private int[] blinkReservation = {-1,-1,-1};
-	private boolean[] blinkFlag = {false,false,false};
+	private boolean[] blinkFlag = {true,true,true};
 	public ReelLight(Slot slot,int top,int left) {
 		this.slot = slot;
 		this.top = top;
@@ -27,7 +25,7 @@ public class ReelLight {
 		loadImage();
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	public void draw(Graphics g) {
 		int stoped = 3 - this.slot.reel.getReelCount(ReelState.Rolling);
 		BufferedImage image = null;
@@ -44,7 +42,7 @@ public class ReelLight {
 			}else {
 				image = this.onImage;
 			}
-			
+
 			if(this.blinkReservation[i] != -1) {
 				this.blinkTimer[i]++;
 				if(this.blinkTimer[i] == this.blinkReservation[i]) {
@@ -57,7 +55,7 @@ public class ReelLight {
 			//System.out.printf("%d %d %d%n",reelStopArr[0],reelStopArr[1],reelStopArr[2]);
 		}
 	}
-	
+
 	private void loadImage() {
 		try {
 			this.onImage = ImageIO.read(getClass().getResource("Resources/img/stop_on.png"));
@@ -67,13 +65,13 @@ public class ReelLight {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void clearReservation() {
 		this.reservation = 0;
 		this.clearBlink();
 	}
-	
-	
+
+
 	public void setTurnOffReservation(int r) {
 		this.reservation = r;
 	}
@@ -82,12 +80,12 @@ public class ReelLight {
 		this.blinkTimer[index] = 0;
 		this.blinkReservation[index] = timer;
 	}
-	
+
 	public void clearBlink(int idx) {
 		this.blinkTimer[idx]  = 0;
 		this.blinkReservation[idx] = -1;
 	}
-	
+
 	public void clearBlink() {
 		this.reelStopArr[0] = -1;
 		this.reelStopArr[1] = -1;
@@ -95,5 +93,8 @@ public class ReelLight {
 		this.clearBlink(0);
 		this.clearBlink(1);
 		this.clearBlink(2);
+		this.blinkFlag[0] = true;
+		this.blinkFlag[1] = true;
+		this.blinkFlag[2] = true;
 	}
 }

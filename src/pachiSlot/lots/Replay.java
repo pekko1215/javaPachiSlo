@@ -36,7 +36,7 @@ public class Replay extends Lot{
 			return ret;
 		}
 		if(slot.replayTime instanceof HighReplayTime) {
-			return new Random().nextInt(3) == 0 ? ControlCode.突入左 : ControlCode.リプレイ;
+			return new Random().nextInt(3) == 0 ? ControlCode.リーチ目リプレイ : ControlCode.リプレイ;
 		}
 		return ControlCode.リプレイ;
 	}

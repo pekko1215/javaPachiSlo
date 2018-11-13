@@ -6,7 +6,6 @@ import java.util.Random;
 import pachiSlot.ControlCode;
 import pachiSlot.ReelLight;
 import pachiSlot.Slot;
-import pachiSlot.lots.Lot;
 import pachiSlot.replayTime.HighReplayTime;
 
 public class EffectManager {
@@ -17,7 +16,7 @@ public class EffectManager {
 		this.slot = slot;
 		this.reelLight = reelLight;
 	}
-	
+
 	public void onLeverOn(ControlCode code) {
 		int syoto = 0;
 		if(slot.bonusFlag != null)
@@ -46,15 +45,6 @@ public class EffectManager {
 						syoto = this.randomThree(99,0,0,1);
 						break;
 					case 突入左:
-						if(this.slot.replayTime instanceof HighReplayTime) {
-							if(this.slot.art.isPlus) {
-								this.onLeverOn(ControlCode.BIG);
-							}else {
-								this.reelLight.clearBlink();
-								this.reelLight.setBlink(new Random().nextInt(2)+1,nabiBlink);
-							}
-							break;
-						}
 						if(this.slot.art != null && this.slot.art.stock > 0) {
 							this.reelLight.setBlink(0,nabiBlink);
 						} else {
@@ -83,6 +73,16 @@ public class EffectManager {
 							this.reelLight.setBlink(2,nabiBlink);
 						}
 						break;
+					case リーチ目リプレイ:
+						if(this.slot.replayTime instanceof HighReplayTime) {
+							if(this.slot.art.isPlus) {
+								this.onLeverOn(ControlCode.BIG);
+							}else {
+								this.reelLight.clearBlink();
+								this.reelLight.setBlink(new Random().nextInt(2)+1,nabiBlink);
+							}
+							break;
+						}
 				}
 				break;
 			case Bonus:
@@ -90,11 +90,11 @@ public class EffectManager {
 		}
 		this.reelLight.setTurnOffReservation(syoto);
 	}
-	
+
 	public void draw(Graphics g) {
-		
+
 	}
-	
+
 	public int randomThree(int... value) {
 		int sum = 0;
 		for(int i=0;i<value.length;i++) {
