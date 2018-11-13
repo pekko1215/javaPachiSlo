@@ -17,6 +17,9 @@ public class ReelLight {
 	private int left;
 	private int reservation = 0;
 	private int[] reelStopArr = {-1,-1,-1};
+	private int[] blinkTimer = {0, 0, 0};
+	private int[] blinkReservation = {-1,-1,-1};
+	private boolean[] blinkFlag = {false,false,false};
 	public ReelLight(Slot slot,int top,int left) {
 		this.slot = slot;
 		this.top = top;
@@ -41,6 +44,15 @@ public class ReelLight {
 			}else {
 				image = this.onImage;
 			}
+			
+			if(this.blinkReservation[i] != -1) {
+				this.blinkTimer[i]++;
+				if(this.blinkTimer[i] == this.blinkReservation[i]) {
+					this.blinkFlag[i] = !this.blinkFlag[i];
+					this.blinkTimer[i] = 0;
+				}
+				image = this.blinkFlag[i] ? this.onImage : this.offImage;
+			}
 			g.drawImage(image, top + image.getWidth()*i, left, null);
 			//System.out.printf("%d %d %d%n",reelStopArr[0],reelStopArr[1],reelStopArr[2]);
 		}
@@ -58,12 +70,30 @@ public class ReelLight {
 	
 	public void clearReservation() {
 		this.reservation = 0;
-		this.reelStopArr[0] = -1;
-		this.reelStopArr[1] = -1;
-		this.reelStopArr[2] = -1;
+		this.clearBlink();
 	}
+	
 	
 	public void setTurnOffReservation(int r) {
 		this.reservation = r;
+	}
+
+	public void setBlink(int index, int timer) {
+		this.blinkTimer[index] = 0;
+		this.blinkReservation[index] = timer;
+	}
+	
+	public void clearBlink(int idx) {
+		this.blinkTimer[idx]  = 0;
+		this.blinkReservation[idx] = -1;
+	}
+	
+	public void clearBlink() {
+		this.reelStopArr[0] = -1;
+		this.reelStopArr[1] = -1;
+		this.reelStopArr[2] = -1;
+		this.clearBlink(0);
+		this.clearBlink(1);
+		this.clearBlink(2);
 	}
 }

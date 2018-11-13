@@ -7,7 +7,7 @@ import pachiSlot.lots.*;
 
 public class Art {
 	public int stock;
-	private final int[] startStockTable = {50,30,10,5,3,2};
+	private final int[] startStockTable = {50,31,10,5,3,1};
 	private final int[][] modeMap = {
 			{70,30,70,30,70,30},
 			{30,70,30,70,30,70},
@@ -23,6 +23,7 @@ public class Art {
 	public int[] baseTable;
 	public int tableIndex;
 	public boolean noLot = false;
+	public boolean isPlus = false;
 	public Art() {
 		this.stock = this.Lot(this.startStockTable);
 	}
@@ -63,6 +64,7 @@ public class Art {
 	
 	public int onLot(ControlCode rcc) {
 		int ret = 0;
+		this.isPlus = false;
 		int[] table = {0,0,0};
 		switch(rcc) {
 			case 弱チェリー:
@@ -97,6 +99,7 @@ public class Art {
 			int loop = loopStockTable[this.baseMode.ordinal()];
 			while(new Random().nextInt(100) < loop) ret++;
 		}
+		if(ret > 0) this.isPlus = true;
 		if(ret > 0 && new Random().nextInt(10) == 0) {
 			this.nextStepUp = true;
 			System.out.println("次回高モード確定");

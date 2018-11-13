@@ -84,6 +84,7 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 
 	private void Pay() {
 		this.slot.gameState = GameState.Pay;
+		this.reelLight.clearBlink();
 		ArrayList<HitEvent> list = this.slot.control.getHit(this.slot.betCoin);
 		int pay = 0;
 		System.out.println(list.size());
