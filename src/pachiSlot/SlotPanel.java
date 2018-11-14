@@ -42,6 +42,8 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 	private SimpleSegment creditSegment;
 	private EffectSegment effectSegment;
 	private EffectManager effectManager;
+	private Navigation navi;
+	
 	public SlotPanel(Slot slot){
 		this.slot = slot;
 		this.addKeyListener(this);
@@ -52,7 +54,8 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 		this.paySegment = new PaySegment(3, 490);
 		this.creditSegment = new SimpleSegment(98, 490);
 		this.effectSegment = new EffectSegment(780, 490);
-		this.effectManager = new EffectManager(this.slot, this.reelLight);
+		this.navi = new Navigation(770, 50, 100);
+		this.effectManager = new EffectManager(this.slot, this.reelLight,this.navi);
 		this.setBackground(Color.gray);
 	}
 	private void loadImage() {
@@ -85,6 +88,7 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 	private void Pay() {
 		this.slot.gameState = GameState.Pay;
 		this.reelLight.clearBlink();
+		this.navi.clearNabi();
 		ArrayList<HitEvent> list = this.slot.control.getHit(this.slot.betCoin);
 		int pay = 0;
 		System.out.println(list.size());
@@ -107,7 +111,7 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 		this.paySegment.draw(graphics);
 		this.creditSegment.draw(graphics);
 		this.effectSegment.draw(graphics);
-		
+		this.navi.draw(graphics);
 		this.creditSegment.value = "" + slot.credit;
 		graphics.drawRect(reelMarginLeft, reelMarginTop, ChipWidth*3, ChipHeight*4 - FrameTop - FrameBottom);
 		if(this.reelChips.size() != 0) {
@@ -306,6 +310,9 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 		if(!this.slot.isReplay) {
 			PlaySound("bet.wav");
 		}
+		if(this.slot.art != null && this.slot.art.isPlus) {
+			PlaySound("uwanose.wav");
+		}
 		this.slot.Bet(coin);
 		this.paySegment.reset();
 	}
@@ -317,8 +324,11 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 
 	private void LeverOn() {
 		ControlCode code = this.slot.LeverOn();
-		PlaySound("start.wav");
-		this.effectManager.onLeverOn(code);
+		if(this.effectManager.onLeverOn(code)) {
+			PlaySound("yokoku.wav");
+		}else {
+			PlaySound("start.wav");	
+		}
 	}
 
 	private long PlaySound(String name) {
@@ -367,6 +377,9 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 				Resume();
 			}
 		}).start();
+		if(this.slot.art != null && this.slot.art.isPlus) {
+			PlaySound("uwanose.wav");
+		}
 	}
 	private void PayEffect(int pay) {
 		if(pay == 0) return;

@@ -6,6 +6,8 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import utilities.SoundPlayer;
+
 public class ReelLight {
 	private Slot slot;
 	private boolean isLoaded = false;
@@ -33,6 +35,9 @@ public class ReelLight {
 			if(this.reelStopArr[i] == -1) {
 				if(this.slot.reel.reelStates[i] != ReelState.Rolling) {
 					this.reelStopArr[i] = stoped;
+					if(this.reelStopArr[i] <= this.reservation && this.slot.gameState == GameState.Rolling) {
+						new SoundPlayer(getClass().getResource("Resources/sound/syoto.wav")).Play();;
+					}
 				}
 			}else {
 				if(stoped == 0) this.reelStopArr[i] = -1;

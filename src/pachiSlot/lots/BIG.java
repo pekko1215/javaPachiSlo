@@ -30,21 +30,19 @@ public class BIG extends Lot{
 			case 1:
 			case 2:
 				return ControlCode.チャンスプラム;
-			case 3:
-			case 4:
-			case 5:
-				return ControlCode.強チェリー;
 			case 6:
 			case 7:
 				return ControlCode.スイカ;
 			case 8:
-				return ControlCode.弱チェリー;
+				return ControlCode.チェリー;
 			case 9:
 			case 10:
-				return ControlCode.リーチ目リプレイ;
 			case 11:
 			case 12:
-				return ControlCode.リーチ目1枚;
+			case 3:
+			case 4:
+			case 5:
+				return ControlCode.リーチ目リプレイ;
 
 		}
 		return null;

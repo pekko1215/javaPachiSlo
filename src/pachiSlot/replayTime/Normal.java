@@ -4,6 +4,7 @@ import pachiSlot.Role;
 import pachiSlot.Slot;
 import pachiSlot.effect.Art;
 import pachiSlot.lots.Lot;
+import utilities.SoundPlayer;
 
 public class Normal extends ReplayTime {
 
@@ -25,6 +26,8 @@ public class Normal extends ReplayTime {
 			case リプレイ:
 				this.slot.replayTime = new LowReplayTime(this.slot,250);
 				this.slot.art = null;
+				SoundPlayer s = new SoundPlayer(getClass().getResource("../Resources/sound/czend.wav"));
+				s.Play();	
 				break;
 			case 突入リプレイ1:
 			case 突入リプレイ2:

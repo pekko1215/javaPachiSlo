@@ -66,14 +66,9 @@ public class Art {
 		this.isPlus = false;
 		int[] table = {0,0,0};
 		switch(rcc) {
-			case 弱チェリー:
+			case チェリー:
 				table[0] = 10;
 				table[1] = 30;
-				table[2] = 100;
-				break;
-			case 強チェリー:
-				table[0] = 20;
-				table[1] = 60;
 				table[2] = 100;
 				break;
 			case スイカ:

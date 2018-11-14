@@ -7,13 +7,13 @@ import pachiSlot.effect.Art;
 import pachiSlot.lots.BIG;
 import pachiSlot.lots.Bell;
 import pachiSlot.lots.ChancePlum;
-import pachiSlot.lots.HighCherry;
 import pachiSlot.lots.Lot;
 import pachiSlot.lots.LowCherry;
 import pachiSlot.lots.Melon;
 import pachiSlot.lots.Replay;
 import pachiSlot.replayTime.Normal;
 import pachiSlot.replayTime.ReplayTime;
+import utilities.SoundPlayer;
 
 public class Slot {
 	public int betCoin;
@@ -44,7 +44,6 @@ public class Slot {
 		this.lotManager.add(new Replay());
 		this.lotManager.add(new Bell());
 		this.lotManager.add(new Melon());
-		this.lotManager.add(new HighCherry());
 		this.lotManager.add(new LowCherry());
 		this.lotManager.add(new ChancePlum());
 		this.lotManager.add(new BIG());
@@ -114,10 +113,11 @@ public class Slot {
 				this.isReplay = true;
 				break;
 			case プラム:
-				arr[0] = 14;
-				arr[1] = 14;
-				arr[2] = 1;
-				pay = arr[this.betCoin - 1];
+				if(this.betCoin == 3) {
+					this.isReplay = true;
+				}else {
+					pay =  14;
+				}
 				break;
 			case スイカ:
 				arr[0] = 0;
@@ -125,12 +125,10 @@ public class Slot {
 				arr[2] = 3;
 				pay = arr[this.betCoin - 1];
 				break;
-			case 弱チェリー:
-			case 強チェリー:
-				arr[0] = 0;
-				arr[1] = 0;
-				arr[2] = 4;
-				pay = arr[this.betCoin - 1];
+			case チェリー1:
+			case チェリー2:
+			case チェリー3:
+				this.isReplay = true;
 				break;
 			case 赤8枚役:
 			case 青8枚役:
@@ -150,7 +148,6 @@ public class Slot {
 			case 突入リプレイ3:
 			case 突入リプレイ4:
 			case 突入リプレイ5:
-
 			case リーチ目リプレイ1:
 			case リーチ目リプレイ2:
 			case リーチ目リプレイ3:

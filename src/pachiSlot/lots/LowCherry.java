@@ -7,7 +7,7 @@ import pachiSlot.Slot;
 public class LowCherry extends Lot{
 
 	public LowCherry() {
-		this.name = "弱チェリー";
+		this.name = "チェリー";
 	}
 	public int getProbability(Slot slot) {
 		if(slot.gamemode != GameMode.Normal) return 0;
@@ -16,6 +16,6 @@ public class LowCherry extends Lot{
 
 	@Override
 	public ControlCode getControlCode(Slot slot) {
-		return ControlCode.弱チェリー;
+		return ControlCode.チェリー;
 	}
 }

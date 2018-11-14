@@ -36,9 +36,10 @@ public class Segment {
 		this.clear(g);
 		g.setColor(front);
 		String tmp = this.value;
-		if(tmp.length() > this.count) {
-			tmp = tmp.substring(0, this.count);
+		for(int i=0;i<this.count;i++) {
+			tmp = "!"+tmp;
 		}
+		tmp = tmp.substring(tmp.length() - this.count);
 		g.drawString(tmp,this.x,this.y+g.getFontMetrics().getAscent());
 	}
 	public void clear(Graphics g) {
