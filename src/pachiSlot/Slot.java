@@ -27,7 +27,7 @@ public class Slot {
 	public ControlCode controlCode;
 	public boolean isReplay = false;
 	public Bonus bonus = null;
-	public ReplayTime replayTime = new Normal(this);
+	public ReplayTime replayTime = new LowReplayTime(this,250);
 	public int credit = 50;
 	public Art art;
 
