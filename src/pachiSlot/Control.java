@@ -208,7 +208,7 @@ public class Control {
 					}
 				}
 				if(!hitFlag) continue;
-				ret.add(new HitEvent(matrix, this.yakuList.get(k)));
+				ret.add(new HitEvent(matrix, this.yakuList.get(k),i));
 	        }
 	    }
 	    return ret;

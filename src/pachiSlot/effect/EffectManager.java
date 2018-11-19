@@ -50,13 +50,18 @@ public class EffectManager {
 						}
 						break;
 					case BIG:
+						if(this.slot.replayTime instanceof HighReplayTime && new Random().nextInt(4) == 0) {
+							ControlCode[] r = {ControlCode.赤8枚,ControlCode.青8枚,ControlCode.BAR8枚};
+							this.onLeverOn(r[new Random().nextInt(3)]);
+							break;
+						}
 						syoto = this.randomThree(10,20,10,60);
 						if(syoto > 0 && new Random().nextInt(5)<3) {
 							isYokoku = true;
 						}
 						break;
 					case リプレイ:
-						syoto = this.randomThree(80,19,0,1);
+						syoto = this.randomThree(160,39,0,1);
 						if(syoto == 3 && new Random().nextInt(5)<4) {
 							isYokoku = true;
 						}
@@ -101,7 +106,7 @@ public class EffectManager {
 					case リーチ目リプレイ:
 						if(this.slot.replayTime instanceof HighReplayTime) {
 							if(this.slot.art.isPlus) {
-								this.onLeverOn(ControlCode.BIG);
+								return this.onLeverOn(ControlCode.BIG);
 							}else {
 								this.reelLight.clearBlink();
 								this.Play("navi");

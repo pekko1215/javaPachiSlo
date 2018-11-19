@@ -86,6 +86,8 @@ public class Art {
 				table[1] = 3;
 				table[2] = 77;
 				break;
+			case BIG:
+				table[0] = table[1] = table[2] = 100;
 		}
 		int r = new Random().nextInt(100);
 		if(r < table[this.baseMode.ordinal()]) {

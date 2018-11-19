@@ -15,7 +15,7 @@ public class BonusReplayTime extends ReplayTime {
 	}
 	@Override
 	public Lot onLot(Lot original) {
-		if(original.name == null && new Random().nextInt(4)<3) {
+		if(original.name == null && new Random().nextInt(4)<1) {
 			return new Replay();
 		}
 		return original;

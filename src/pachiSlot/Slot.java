@@ -11,6 +11,7 @@ import pachiSlot.lots.Lot;
 import pachiSlot.lots.LowCherry;
 import pachiSlot.lots.Melon;
 import pachiSlot.lots.Replay;
+import pachiSlot.replayTime.LowReplayTime;
 import pachiSlot.replayTime.Normal;
 import pachiSlot.replayTime.ReplayTime;
 import utilities.SoundPlayer;
@@ -68,10 +69,16 @@ public class Slot {
 				if(this.bonusFlag != null) {
 					this.art.noLot = true;
 				}
-				int stock = this.art.onLot(this.controlCode);
+				ControlCode tmp = this.controlCode;
+				if(this.bonusFlag != null) {
+					tmp = ControlCode.BIG;
+				}
+				int stock = this.art.onLot(tmp);
 				if(stock != 0) {
 					System.out.println("ストック"+stock+"獲得");
 				}
+			}else {
+				this.art.isPlus = false;
 			}
 			if(this.bonusFlag == null) this.art.noLot = false;
 		}

@@ -14,6 +14,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import pachiSlot.bonus.BonusType5;
+import pachiSlot.effect.ARTMode;
 import pachiSlot.effect.EffectManager;
 import pachiSlot.lots.Lot;
 import pachiSlot.replayTime.*;
@@ -43,6 +44,9 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 	private EffectSegment effectSegment;
 	private EffectManager effectManager;
 	private Navigation navi;
+	private BetLight betLight;
+	private int[] LineIndex = {2,0,4,1,3};
+	private SoundPlayer bgm;
 	
 	public SlotPanel(Slot slot){
 		this.slot = slot;
@@ -56,6 +60,7 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 		this.effectSegment = new EffectSegment(780, 490);
 		this.navi = new Navigation(770, 50, 100);
 		this.effectManager = new EffectManager(this.slot, this.reelLight,this.navi);
+		this.betLight = new BetLight(20,20);
 		this.setBackground(Color.gray);
 	}
 	private void loadImage() {
@@ -86,17 +91,54 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 	}
 
 	private void Pay() {
+		GameMode oldGameMode = this.slot.gamemode;
+		ReplayTime oldReplayTime = this.slot.replayTime;
 		this.slot.gameState = GameState.Pay;
 		this.reelLight.clearBlink();
 		this.navi.clearNabi();
 		ArrayList<HitEvent> list = this.slot.control.getHit(this.slot.betCoin);
 		int pay = 0;
 		System.out.println(list.size());
+		ArrayList<Integer> lines = new ArrayList<Integer>();
 		for(HitEvent e : list) {
 			pay += this.slot.getPay(e.yaku);
+			lines.add(e.line);
 		}
-		System.out.println("pay:"+pay);
 		this.PayEffect(pay);
+		if(this.slot.bonusFlag != null) {
+			this.stopBGM();
+		}
+		if(pay != 0) {
+			this.betLight.clearLight();
+			for(int e : lines) {
+				this.betLight.setLight(LineIndex[e],30);
+			}
+		}
+		if(oldGameMode != this.slot.gamemode) {
+			switch(this.slot.gamemode) {
+				case Bonus:
+					this.playBGM("bgm1");
+					break;
+				case Normal:
+					this.playBGM("chanceZone");
+					break;
+			}
+		}
+		if(oldReplayTime != this.slot.replayTime) {
+			if(this.slot.replayTime instanceof HighReplayTime) {
+				if(this.slot.art.baseMode == ARTMode.VeryHigh) {
+					this.playBGM("arthigh");
+				}else {
+					this.playBGM("artlow");
+				}
+			}
+			if(this.slot.replayTime instanceof Normal) {
+				this.playBGM("chanceZone");
+			}
+			if(this.slot.replayTime instanceof LowReplayTime) {
+				this.stopBGM();
+			}
+		}
 		this.slot.gameState = GameState.BetWait;
 	}
 	@Override
@@ -111,6 +153,7 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 		this.paySegment.draw(graphics);
 		this.creditSegment.draw(graphics);
 		this.effectSegment.draw(graphics);
+		this.betLight.draw(graphics);
 		this.navi.draw(graphics);
 		this.creditSegment.value = "" + slot.credit;
 		graphics.drawRect(reelMarginLeft, reelMarginTop, ChipWidth*3, ChipHeight*4 - FrameTop - FrameBottom);
@@ -247,6 +290,9 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 			try {
 				long res = (long)nextTime - System.currentTimeMillis();
 				if(res < 0) res = 0;
+				if(res > sleepTime) {
+					res = (long) sleepTime;
+				}
 				Thread.sleep(res);
 				nextTime += sleepTime;
 				repaint();
@@ -313,6 +359,18 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 		if(this.slot.art != null && this.slot.art.isPlus) {
 			PlaySound("uwanose.wav");
 		}
+		this.betLight.clearLight();
+		new Thread(()->{
+			for(int i = 0;i < coin; i++) {
+				this.betLight.setLightbyNum(i+1);
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}).start();
 		this.slot.Bet(coin);
 		this.paySegment.reset();
 	}
@@ -323,7 +381,11 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 	}
 
 	private void LeverOn() {
+		ReplayTime old = this.slot.replayTime;
 		ControlCode code = this.slot.LeverOn();
+		if(old != this.slot.replayTime && this.slot.replayTime instanceof Normal) {
+			this.playBGM("chanceZone");
+		}
 		if(this.effectManager.onLeverOn(code)) {
 			PlaySound("yokoku.wav");
 		}else {
@@ -339,8 +401,13 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 		return (int)(length / sampling);
 	}
 
-	private void LoopSound(String name) {
-		new SoundPlayer(getClass().getResource("Resources/sound/"+name),true).Play();
+	private SoundPlayer LoopSound(String name) {
+		if(!name.endsWith(".wav")) {
+			name += ".wav";
+		}
+		SoundPlayer player = new SoundPlayer(getClass().getResource("Resources/sound/"+name),true);
+		player.Play();
+		return player;
 	}
 
 	@Override
@@ -371,6 +438,10 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 					Thread.sleep(len);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
+				}
+				//betLight.clearLight();
+				for(int i = 0;i < slot.betCoin; i++) {
+					betLight.setLightbyNum(i+1);
 				}
 				slot.Replay(slot.betCoin);
 				slot.isReplay = false;
@@ -414,6 +485,17 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 				return;
 			}
 			this.effectSegment.value = "";
+		}
+	}
+	public void playBGM(String name) {
+		if(this.bgm != null) this.stopBGM();
+		SoundPlayer player = this.LoopSound(name);
+		this.bgm = player;
+	}
+	public void stopBGM() {
+		if(this.bgm != null) {
+			this.bgm.Stop();
+			this.bgm = null;
 		}
 	}
 }

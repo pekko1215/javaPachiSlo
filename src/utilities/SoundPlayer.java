@@ -29,7 +29,6 @@ public class SoundPlayer {
 			DataLine.Info dataLine = new DataLine.Info(Clip.class,af);
 			clip = (Clip)AudioSystem.getLine(dataLine);
 			//çƒê∂èÄîıäÆóπ
-			clip.loop(isLoop ? clip.LOOP_CONTINUOUSLY : 0);
 			
 			clip.open(ais);
 		} catch (UnsupportedAudioFileException | IOException e) {
@@ -46,14 +45,11 @@ public class SoundPlayer {
 		return this;
 	}
 	public void Play() {
-		clip.start();
-		while(clip.isActive())
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		if(isLoop) {
+			clip.loop(clip.LOOP_CONTINUOUSLY);
+		}else {
+			clip.start();
+		}
 	}
 	public void Stop() {
 		clip.stop();
