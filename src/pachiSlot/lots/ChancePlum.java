@@ -12,7 +12,7 @@ public class ChancePlum extends Lot{
 
 	public int getProbability(Slot slot) {
 		if(slot.gamemode != GameMode.Normal) return 0;
-		int p = new BIG().getProbability(slot) / 3 * 2;
+		int p = new BIG().getProbability(slot) /13 * 3  * 2;
 		return p;
 	}
 

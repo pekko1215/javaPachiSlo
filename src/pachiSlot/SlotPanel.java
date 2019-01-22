@@ -1,6 +1,7 @@
 package pachiSlot;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -233,6 +234,9 @@ public class SlotPanel extends JPanel implements Runnable , KeyListener{
 			}
 		}
 		reelLight.draw(graphics);
+		graphics.setFont(new Font("メイリオ", Font.PLAIN, 32));
+		graphics.setColor(Color.BLACK);
+		graphics.drawString(String.format("%d枚 %dG",slot.coin,slot.playCount),0,600);
 	}
 
 	private ArrayList<BufferedImage> splitImages(BufferedImage buffer){

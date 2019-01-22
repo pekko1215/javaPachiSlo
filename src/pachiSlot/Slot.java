@@ -17,7 +17,9 @@ import pachiSlot.replayTime.ReplayTime;
 import utilities.SoundPlayer;
 
 public class Slot {
+	public int coin = 0;
 	public int betCoin;
+	public int playCount = 0;
 	public GameMode gamemode = GameMode.Normal;
 	public Control control;
 	public Reel reel;
@@ -54,6 +56,7 @@ public class Slot {
 	public boolean Bet(int coin) {
 		if(this.gameState != GameState.BetWait) return false;
 		this.betCoin = coin;
+		this.coin -= this.betCoin;
 		this.gameState = GameState.Beted;
 		this.addCredit(-coin);
 		return true;
@@ -81,6 +84,11 @@ public class Slot {
 				this.art.isPlus = false;
 			}
 			if(this.bonusFlag == null) this.art.noLot = false;
+		}
+		if(this.gamemode == GameMode.Bonus) {
+			this.playCount = 0;
+		}else {
+			this.playCount++;
 		}
 		this.control.setReelControlCode(this.controlCode.ordinal());
 		this.gameState = GameState.Wait;
@@ -170,6 +178,7 @@ public class Slot {
 		System.out.println(yaku.role);
 		this.replayTime.onHit(yaku.role);
 		this.addCredit(pay);
+		coin += pay;
 		return pay;
 	}
 

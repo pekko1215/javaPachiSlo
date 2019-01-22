@@ -21,7 +21,7 @@ public class Segment {
 		this.x = x;
 		this.y = y;
 		try {
-			this.font = Font.createFont(Font.TRUETYPE_FONT,getClass().getResource("../Resources/font/DSEG14Modern-Regular.ttf").openStream()).deriveFont(size);
+			this.font = Font.createFont(Font.TRUETYPE_FONT,getClass().getResource("font/DSEG14Modern-Regular.ttf").openStream()).deriveFont(size);
 		} catch (FontFormatException e) {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();

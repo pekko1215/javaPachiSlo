@@ -15,7 +15,7 @@ public class EffectSegment extends Segment {
 		super(x, y, 3, 56f, new Color(200,0,0),new Color(50,0,0));
 		this.value = "!!";
 		try {
-			this.img = ImageIO.read(getClass().getResource("../Resources/img/effectseg.png"));
+			this.img = ImageIO.read(getClass().getResource("image/effectseg.png"));
 		} catch (IOException e) {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();

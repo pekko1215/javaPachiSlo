@@ -15,7 +15,7 @@ public class SimpleSegment extends Segment {
 		super(x, y, 2, 56f, new Color(200,0,0),new Color(50,0,0));
 		this.value = "!!";
 		try {
-			this.img = ImageIO.read(getClass().getResource("../Resources/img/payseg.png"));
+			this.img = ImageIO.read(getClass().getResource("image/payseg.png"));
 		} catch (IOException e) {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
